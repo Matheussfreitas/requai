@@ -6,6 +6,7 @@ import { RequirementsInput } from "@/components/requirements-input"
 import { ActionButtons } from "@/components/action-buttons"
 import { ResultsSection } from "@/components/results-section"
 import { ExportButton } from "@/components/export-button"
+import { api } from "@/lib/axios"
 
 export interface RequirementAnalysis {
   id: string
@@ -17,7 +18,7 @@ export interface RequirementAnalysis {
 
 export default function RequAIPage() {
   const [requirements, setRequirements] = useState("")
-  const [results, setResults] = useState<RequirementAnalysis[]>([])
+  const [results, setResults] = useState<string>("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isImproving, setIsImproving] = useState(false)
   const [hasResults, setHasResults] = useState(false)
@@ -27,23 +28,29 @@ export default function RequAIPage() {
 
     setIsAnalyzing(true)
 
-    // Simular análise da LLM
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      const reqList = requirements.split("\n").filter((req) => req.trim())
 
-    const reqList = requirements.split("\n").filter((req) => req.trim())
-    const analysisResults: RequirementAnalysis[] = reqList.map((req, index) => ({
-      id: `req-${index}`,
-      original: req.trim(),
-      status: Math.random() > 0.6 ? "ambiguous" : "clear",
-      explanation:
-        Math.random() > 0.6
-          ? "Este requisito contém termos vagos como 'rápido' e 'fácil' que podem ser interpretados de diferentes formas."
-          : undefined,
-    }))
+      const response = await api.post('/gemini/analyze-ambiguity', {
+        requirements: reqList
+      })
 
-    setResults(analysisResults)
-    setHasResults(true)
-    setIsAnalyzing(false)
+      if (!response.data) {
+        throw new Error('Erro na análise de ambiguidade')
+      }
+      console.log(response.data)
+      
+      // Usar resposta direta do backend
+      setResults(response.data || "Nenhum resultado retornado")
+      setHasResults(true)
+    } catch (error) {
+      console.error('Erro ao analisar requisitos:', error)
+      // Fallback para mensagem de erro
+      setResults("Erro ao analisar requisitos. Tente novamente.")
+      setHasResults(true)
+    } finally {
+      setIsAnalyzing(false)
+    }
   }
 
   const handleImproveRequirements = async () => {
@@ -51,20 +58,29 @@ export default function RequAIPage() {
 
     setIsImproving(true)
 
-    // Simular melhoria da LLM
-    await new Promise((resolve) => setTimeout(resolve, 2500))
+    try {
+      const reqList = requirements.split("\n").filter((req) => req.trim())
 
-    const reqList = requirements.split("\n").filter((req) => req.trim())
-    const improvedResults: RequirementAnalysis[] = reqList.map((req, index) => ({
-      id: `req-${index}`,
-      original: req.trim(),
-      status: "clear",
-      improved: `${req.trim()} [Versão melhorada com critérios específicos e mensuráveis]`,
-    }))
+      const response = await api.post('/gemini/improve-requirements', {
+        requirements: reqList
+      })
 
-    setResults(improvedResults)
-    setHasResults(true)
-    setIsImproving(false)
+      if (!response.data) {
+        throw new Error('Erro na melhoria de requisitos')
+      }
+      console.log(response.data)
+      
+      // Usar resposta direta do backend
+      setResults(response.data || "Nenhum resultado retornado")
+      setHasResults(true)
+    } catch (error) {
+      console.error('Erro ao melhorar requisitos:', error)
+      // Fallback para mensagem de erro
+      setResults("Erro ao melhorar requisitos. Tente novamente.")
+      setHasResults(true)
+    } finally {
+      setIsImproving(false)
+    }
   }
 
   const handleExport = () => {

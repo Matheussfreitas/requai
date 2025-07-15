@@ -27,11 +27,11 @@ export function RequirementsInput({ value, onChange }: RequirementsInputProps) {
           </Label>
           <Textarea
             id="requirements"
-            placeholder="Exemplo:
+            placeholder={`Exemplo:
 O sistema deve ser rápido
 O usuário deve conseguir fazer login facilmente
 A aplicação deve ter boa performance
-O sistema deve ser seguro e confiável"
+O sistema deve ser seguro e confiável`}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="min-h-[200px] resize-none border-slate-200 focus:border-blue-500 focus:ring-blue-500"
