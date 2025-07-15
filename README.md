@@ -198,20 +198,13 @@ npm run start
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## 👥 Equipe
-
-- **Matheus Freitas** - Desenvolvimento Principal
-- **Gabriel Fontineli Dantas** - Colaborador
-- **Jonas Rafael Silva Cavalcanti** - Colaborador
-
 ## 📞 Contato
 
 - **GitHub**: [@Matheussfreitas](https://github.com/Matheussfreitas)
-- **LinkedIn**: [Matheus Freitas](https://linkedin.com/in/matheussfreitas)
+- **LinkedIn**: [Matheus Freitas](https://linkedin.com/in/mgsoutodelira)
 
 ---
 
 <div align="center">
-  <p>Feito com ❤️ para melhorar a qualidade de requisitos de software</p>
   <p><strong>RequAI v0.1</strong> - Análise de ambiguidade e otimização com IA</p>
 </div>
