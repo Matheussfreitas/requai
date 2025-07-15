@@ -1,8 +1,15 @@
 import { Module } from '@nestjs/common';
 import { GeminiModule } from './gemini/gemini.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [GeminiModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    GeminiModule,
+  ],
   controllers: [],
   providers: [],
 })
