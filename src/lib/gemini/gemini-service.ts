@@ -1,7 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { gemini } from '../shared/gemini-client';
+import { gemini } from "./client";
 
-@Injectable()
 export class GeminiService {
   async analyzeAmbiguity(requirements: string[]) {
     const prompt = `
