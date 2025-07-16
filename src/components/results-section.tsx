@@ -27,7 +27,7 @@ export function ResultsSection({ results }: ResultsSectionProps) {
             Os resultados aparecerão aqui após a análise
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="max-h-96 overflow-y-auto">
           <div className="text-center py-12 text-slate-400">
             <BarChart3 className="h-16 w-16 mx-auto mb-4 opacity-50" />
             <p>Aguardando análise dos requisitos...</p>
@@ -47,7 +47,7 @@ export function ResultsSection({ results }: ResultsSectionProps) {
         <CardDescription>Análise gerada pela IA</CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="max-h-96 overflow-y-auto">
         <div className="space-y-4">
           {results.map((item) => {
             // Verificar se é análise ou melhoria
@@ -82,7 +82,11 @@ export function ResultsSection({ results }: ResultsSectionProps) {
                               {analysisItem.termosAmbiguos.map((termo: string, index: number) => (
                                 <span
                                   key={index}
-                                  className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full"
+                                  className={`text-xs px-2 py-1 rounded-full ${
+                                    termo === 'não é um requisito' 
+                                      ? 'bg-orange-100 text-orange-800' 
+                                      : 'bg-red-100 text-red-800'
+                                  }`}
                                 >
                                   {termo}
                                 </span>
@@ -103,8 +107,19 @@ export function ResultsSection({ results }: ResultsSectionProps) {
                     </>
                   ) : (
                     <div>
-                      <strong className="text-sm text-slate-800">Versão melhorada:</strong>
-                      <p className="text-sm text-slate-600 mt-1">{improvementItem.reescrito}</p>
+                      <strong className="text-sm text-slate-800">
+                        {improvementItem.reescrito.includes('não representa um requisito de software válido') 
+                          ? 'Observação:' 
+                          : 'Versão melhorada:'
+                        }
+                      </strong>
+                      <p className={`text-sm mt-1 ${
+                        improvementItem.reescrito.includes('não representa um requisito de software válido')
+                          ? 'text-orange-600 font-medium'
+                          : 'text-slate-600'
+                      }`}>
+                        {improvementItem.reescrito}
+                      </p>
                     </div>
                   )}
                 </div>
