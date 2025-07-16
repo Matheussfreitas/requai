@@ -24,7 +24,7 @@ export function ExportButton({ onClick, disabled }: ExportButtonProps) {
         </Button>
 
         <p className="text-xs text-slate-500 mt-2 text-center">
-          {disabled ? "Execute uma análise para habilitar a exportação" : "Baixar análise em formato JSON"}
+          {disabled ? "Execute uma análise para habilitar a exportação" : "Baixar análise em formato PDF"}
         </p>
       </CardContent>
     </Card>
