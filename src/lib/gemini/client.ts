@@ -1,10 +1,13 @@
 import { GoogleGenAI } from '@google/genai';
 
+const apiKey = process.env.GEMINI_API_KEY;
+
+if (!apiKey) {
+  throw new Error('GEMINI_API_KEY não encontrada nas variáveis de ambiente');
+}
+
 export const gemini = new GoogleGenAI({
-  apiKey: 'AIzaSyDtEols0cgKpLUTtkdNT-dEdPlb2mpNMM8',
+  apiKey: apiKey,
 });
 
-console.log(
-  'Gemini client initialized with API key:',
-  'AIzaSyDtEols0cgKpLUTtkdNT-dEdPlb2mpNMM8',
-);
+console.log('Gemini client initialized');

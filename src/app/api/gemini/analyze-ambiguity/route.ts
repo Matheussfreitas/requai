@@ -6,13 +6,35 @@ import { NextRequest, NextResponse } from 'next/server';
 const geminiService = new GeminiService();
 
 export async function POST(req: NextRequest) {
-  const dto = (await req.json()) as AnalyzeDto;
-  console.log('Received DTO:', dto);
+  try {
+    const dto = (await req.json()) as AnalyzeDto;
+    console.log('Received DTO:', dto);
 
-  if (!dto.requirements || !Array.isArray(dto.requirements)) {
-    return NextResponse.json({ error: 'Requirements must be an array of strings' }, { status: 400 });
+    if (!dto.requirements || !Array.isArray(dto.requirements)) {
+      return NextResponse.json({ error: 'Requirements must be an array of strings' }, { status: 400 });
+    }
+
+    const result = await geminiService.analyzeAmbiguity(dto.requirements);
+    
+    // Log para debug
+    console.log('Raw Gemini response:', result);
+    
+    // Verificar se o resultado existe e tentar fazer parse
+    if (!result) {
+      return NextResponse.json({ error: 'No response from AI' }, { status: 500 });
+    }
+    
+    // Tentar fazer parse do JSON retornado pelo Gemini
+    try {
+      const parsedResult = JSON.parse(result);
+      return NextResponse.json(parsedResult);
+    } catch (parseError) {
+      console.error('Error parsing Gemini response:', parseError);
+      // Se não conseguir fazer parse, retornar como string
+      return NextResponse.json({ error: 'Invalid response format from AI', rawResponse: result }, { status: 500 });
+    }
+  } catch (error) {
+    console.error('Error in analyze-ambiguity API:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-
-  const result = await geminiService.analyzeAmbiguity(dto.requirements);
-  return NextResponse.json(result);
 }
