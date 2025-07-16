@@ -26,7 +26,7 @@ export function ActionButtons({
           <Button
             onClick={onAnalyzeAmbiguity}
             disabled={disabled || isAnalyzing || isImproving}
-            className="h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium"
+            className="h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium cursor-pointer"
             size="lg"
           >
             {isAnalyzing ? (
@@ -45,7 +45,7 @@ export function ActionButtons({
           <Button
             onClick={onImproveRequirements}
             disabled={disabled || isAnalyzing || isImproving}
-            className="h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium"
+            className="h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium cursor-pointer"
             size="lg"
           >
             {isImproving ? (
