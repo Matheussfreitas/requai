@@ -3,14 +3,23 @@ import { gemini } from "./client";
 export class GeminiService {
   async analyzeAmbiguity(requirements: string[]) {
     const prompt = `
-      Você é um assistente especializado em Engenharia de Requisitos. Sua tarefa é analisar uma lista de requisitos e identificar termos ambíguos, subjetivos ou vagos que possam comprometer a clareza e a implementação correta do sistema.
+      Você é um assistente especializado em Engenharia de Requisitos. Sua tarefa é analisar uma lista de textos e:
 
-      Para cada requisito, siga as instruções abaixo:
+      1. PRIMEIRO: Validar se cada texto é realmente um requisito de software (funcional ou não-funcional)
+      2. SEGUNDO: Para textos que são requisitos válidos, identificar termos ambíguos, subjetivos ou vagos
+      
+      CRITÉRIOS PARA REQUISITOS VÁLIDOS:
+      - Descreve uma funcionalidade, comportamento ou restrição do sistema
+      - Especifica o que o sistema deve fazer ou como deve se comportar
+      - Pode ser um requisito funcional (o que fazer) ou não-funcional (como fazer)
+      - Não são perguntas, comentários gerais, ou textos não relacionados ao software
 
-      1. Reproduza o requisito original exatamente como recebido.
-      2. Identifique termos ambíguos ou subjetivos.
-      3. Justifique por que esses termos são considerados ambíguos.
-      4. Caso não haja ambiguidade, informe claramente que o requisito é claro e objetivo.
+      Para cada texto, siga as instruções abaixo:
+
+      1. Reproduza o texto original exatamente como recebido.
+      2. Se NÃO for um requisito válido, coloque "não é um requisito" em termosAmbiguos e explique na justificativa.
+      3. Se FOR um requisito válido, identifique termos ambíguos ou subjetivos.
+      4. Justifique sua análise.
 
       IMPORTANTE: Retorne APENAS o JSON válido, sem texto adicional antes ou depois.
 
@@ -28,10 +37,16 @@ export class GeminiService {
           "original": "Texto original do requisito.",
           "termosAmbiguos": [],
           "justificativa": "O requisito está claro e não contém termos ambíguos."
+        },
+        {
+          "id": 3,
+          "original": "Texto que não é um requisito.",
+          "termosAmbiguos": ["não é um requisito"],
+          "justificativa": "Este texto não representa um requisito de software válido. É apenas um comentário/pergunta/texto genérico."
         }
       ]
 
-      ### Requisitos:
+      ### Textos para análise:
       ${requirements.map((r, i) => `${i + 1}. ${r}`).join("\n")}
       `;
 
@@ -58,16 +73,27 @@ export class GeminiService {
 
   async improveRequirements(requirements: string[]) {
     const prompt = `
-      Você é um especialista em Engenharia de Requisitos. Sua tarefa é reescrever uma lista de requisitos de forma mais clara, objetiva e precisa, evitando qualquer ambiguidade, subjetividade ou termos vagos. 
+      Você é um especialista em Engenharia de Requisitos. Sua tarefa é:
 
-      Para cada requisito, siga as instruções abaixo:
+      1. PRIMEIRO: Validar se cada texto é realmente um requisito de software (funcional ou não-funcional)
+      2. SEGUNDO: Para textos que são requisitos válidos, reescrevê-los de forma mais clara, objetiva e precisa
+      
+      CRITÉRIOS PARA REQUISITOS VÁLIDOS:
+      - Descreve uma funcionalidade, comportamento ou restrição do sistema
+      - Especifica o que o sistema deve fazer ou como deve se comportar
+      - Pode ser um requisito funcional (o que fazer) ou não-funcional (como fazer)
+      - Não são perguntas, comentários gerais, ou textos não relacionados ao software
 
-      1. Mantenha o significado original do requisito.
-      2. Substitua palavras imprecisas por expressões mensuráveis, técnicas ou verificáveis.
-      3. Não omita nenhum comportamento importante descrito no requisito original.
-      4. Caso o requisito já esteja claro, apenas reescreva com ajustes mínimos de clareza e padronização textual.
+      Para cada texto, siga as instruções abaixo:
+
+      1. Mantenha o texto original.
+      2. Se NÃO for um requisito válido, coloque "Este texto não representa um requisito de software válido" no campo reescrito.
+      3. Se FOR um requisito válido, reescreva-o com maior clareza, substituindo palavras imprecisas por expressões mensuráveis, técnicas ou verificáveis.
+      4. Não omita nenhum comportamento importante descrito no texto original.
 
       IMPORTANTE: Retorne APENAS o JSON válido, sem texto adicional antes ou depois.
+
+      OBSERVAÇÃO: Se após a análise um texto não for um requisito válido, mantenha o original e indique no reescrito que não é um requisito.
 
       ### Formato de saída (JSON):
       [
@@ -78,12 +104,12 @@ export class GeminiService {
         },
         {
           "id": 2,
-          "original": "Texto original do requisito.",
-          "reescrito": "Texto reescrito com maior clareza e objetividade."
+          "original": "Texto que não é um requisito.",
+          "reescrito": "Este texto não representa um requisito de software válido. É apenas um comentário/pergunta/texto genérico."
         }
       ]
 
-      ### Requisitos:
+      ### Textos para análise:
       ${requirements.map((r, i) => `${i + 1}. ${r}`).join('\n')}
       `;
 
